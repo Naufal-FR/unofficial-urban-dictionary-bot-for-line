@@ -14,11 +14,29 @@
 	}
 	set_error_handler('exceptions_error_handler');
 
+	// Finding The Definition From Urban Dictionary
 	function define_term ($term){
 		$term_url = 'http://api.urbandictionary.com/v0/define?term=' . str_replace(' ', '+', $term);
 		$term_json = file_get_contents($term_url);
 		$term_array = json_decode($term_json, true);
 		return $term_array ;
+	}
+
+	// Returned Text Format
+	function text_array_result ($term_array, $chosen_array, $variation_number, $command_type){
+		$word = "> Word <\n" . $term_array['list'][$chosen_array]['word'];
+		$definition = "> Definition <\n" . $term_array['list'][$chosen_array]['definition'];
+		$example = "> Example <\n" . $term_array['list'][$chosen_array]['example'];
+
+		if ($command_type == '++define') {
+			$suggested_variation = 'Type ++other <definition> to get a random variation' ;
+		} elseif ($command_type == '++other') {
+			$suggested_variation = 'Type ++define <definition> to get the most voted variation' ;
+		}
+
+		$variation = 'There are ' . $variation_number . ' variation for this definition.' . "\n" . $suggested_variation ;
+		$term_result_array = array ($word, $definition, $example, $variation);
+		return $term_result_array ;
 	}
 
 	
@@ -38,41 +56,33 @@
 	               		$exploded_Message = explode(" ", $message['text']);
 						
 						try {
-							
+
 							if ($exploded_Message[0] == "++define") {
 		                		$term = substr($message['text'], 9);
-
-		                		$term_array = define_term($term);
-								$no_result = count($term_array['list']);		
-
-								$word = 'Word : ' . $term_array['list'][0]['word'];
-								$definition = 'Definition : ' . $term_array['list'][0]['definition'];
-								$example = 'Example : ' . $term_array['list'][0]['example'];
-								$variation = 'There are ' . $no_result . ' variation for this definition.' . "\n" .'Type ++other <definition> to get a random variation' ;
-								$term_result_array = array ($word, $definition, $example, $variation);
-
-								$term_return = implode("\n\n",$term_result_array) . "";
-	                		} 
-
-	                		elseif ($exploded_Message[0] == "++other"){
+							} elseif ($exploded_Message[0] == "++other") {
 		                		$term = substr($message['text'], 8);
+							} 
 
+							if (empty($term)) {
+								// Empty to compensate for pre-built LINE responses
+							} else {
 		                		$term_array = define_term($term);
-								$no_result = count($term_array['list']);
-								
-								$lookup_value = rand(0,$no_result-1);
-
-								$word = 'Word : ' . $term_array['list'][$lookup_value]['word'];
-								$definition = 'Definition : ' . $term_array['list'][$lookup_value]['definition'];
-								$example = 'Example : ' . $term_array['list'][$lookup_value]['example'];
-								$variation = 'There are ' . $no_result . ' variation for this definition.' . "\n" . 'Type ++define <definition> to get the most voted variation' ;
-								$term_result_array = array ($word, $definition, $example, $variation);
-
-								$term_return = implode("\n\n",$term_result_array) . "";
-	                		}
+		                		if ($term_array['result_type'] == "no_results") {
+		                				$text_response = "I'm sorry, no definition found" ;
+		                		} elseif ($term_array['result_type'] == "exact") {
+			                		$variation = count($term_array['list']);
+									$lookup_value = 0 ;
+									if ($exploded_Message[0] == "++other") {
+										$lookup_value = rand(0,$variation-1);
+										if ($lookup_value == 0){$lookup_value = rand(0,$variation-1);}
+									}
+									$term_result_array = text_array_result($term_array, $lookup_value, $variation, $exploded_Message[0]);	
+									$text_response = implode("\n\n",$term_result_array) . "";
+		                		}	
+							}
 
 						} catch (Exception $e) {
-	                		$term_return = "Sorry, No Definition Found or Error Occured";	
+	                		$text_response = "Sorry, An Error Just Occured";	
 						}
 
 	                    $client->replyMessage(array(
@@ -80,7 +90,7 @@
 	                        'messages' => array(
 	                            array(
 	                                'type' => 'text',
-	                                'text' => $term_return
+	                                'text' => $text_response
 	                            )
 	                        )
 	                    ));
