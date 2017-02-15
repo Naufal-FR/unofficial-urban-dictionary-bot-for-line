@@ -70,7 +70,15 @@
 		                		}
 							} elseif ($exploded_Message[0] == "++other") {
 		                		$term = substr($message['text'], 8);
-							} 
+							} elseif ($exploded_Message[0] == "++list") {
+								$text_response = "Here's all the command you can use right now ;\n\n" .
+								"++define <Word> :\n" . 
+								"Search the meaning of <Word> in Urban Dictionary that has the most likes\n\n" .
+								"++other <Word> : \n" .
+								"Same as ++define but i'll give you a random one without looking at their likes count\n\n" .
+								"++list : \n" .
+								"Listing all the commands you can give me" ;
+							}
 
 							if (empty($term)) {
 								// Empty to compensate for pre-built LINE responses
