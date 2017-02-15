@@ -31,12 +31,12 @@
 		
 		$variation_format = 'This is variation ' . ($chosen_array + 1) .  ' of ' . $variation_number . "\n" ;
 
-		$$tips_no1 = 'Type ++other <definition> to get a random variation' ;
-		$$tips_no2 = 'Type ++define <definition> to get the most voted variation' ;
-		$$tips_no3 = 'Type ++list to see all the command you can use' ;
-		$tips_list = array($$tips_no1, $$tips_no2, $$tips_no3);
-		$$tips_choose = rand(0,count($tips_list)-1);
-		$tips_format = 'Tip : ' . $tips_list[$$tips_choose] ;
+		$tips_no1 = 'Type ++other <definition> to get a random variation' ;
+		$tips_no2 = 'Type ++define <definition> to get the most voted variation' ;
+		$tips_no3 = 'Type ++list to see all the command you can use' ;
+		$tips_list = array($tips_no1, $tips_no2, $tips_no3);
+		$tips_choose = rand(0,count($tips_list)-1);
+		$tips_format = 'Tip : ' . $tips_list[$tips_choose] ;
 
 		$term_result_array = array ($command_format, $word_format, $definition_format, $example_format, $variation_format, $tips_format);
 		$text_return = implode("\n\n",$term_result_array) . "";
