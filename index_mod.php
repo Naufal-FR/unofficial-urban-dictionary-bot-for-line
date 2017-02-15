@@ -22,19 +22,29 @@
 		return $term_array ;
 	}
 
+	function random_term_picker (){
+		$term_url = 'http://api.urbandictionary.com/v0/random';
+		$term_json = file_get_contents($term_url);
+		$term_array = json_decode($term_json, true);
+		$random_array_number = rand(0,count($term_array['list'])-1);
+		$term_return = format_return_text($term_array, $random_array_number, count($term_array['list']), "++random" );
+		return $term_return ;	
+	}
+
 	// Returned Text Format
-	function format_return_text ($term_array, $chosen_array, $variation_number, $command_type){
+	function format_return_text ($term_array, $chosen_array, $variation_total, $command_type){
 		$command_format = "Command Type : " . $command_type ;
 		$word_format = "> Word <\n" . $term_array['list'][$chosen_array]['word'];
 		$definition_format = "> Definition <\n" . $term_array['list'][$chosen_array]['definition'];
 		$example_format = "> Example <\n" . $term_array['list'][$chosen_array]['example'];
 		
-		$variation_format = 'This is variation ' . ($chosen_array + 1) .  ' of ' . $variation_number . "\n" ;
+		$variation_format = 'This is variation ' . ($chosen_array + 1) .  ' of ' . $variation_total . "\n" ;
 
-		$tips_no1 = 'Type ++other <definition> to get a random variation' ;
-		$tips_no2 = 'Type ++define <definition> to get the most voted variation' ;
+		$tips_no1 = 'Type ++other <word> to get a random variation' ;
+		$tips_no2 = 'Type ++define <word> to get the most voted variation' ;
 		$tips_no3 = 'Type ++list to see all the command you can use' ;
-		$tips_list = array($tips_no1, $tips_no2, $tips_no3);
+		$tips_no4 = 'Type ++random to get a completely random word that i will describe' ;
+		$tips_list = array($tips_no1, $tips_no2, $tips_no3, $tips_no4);
 		$tips_choose = rand(0,count($tips_list)-1);
 		$tips_format = 'Tip : ' . $tips_list[$tips_choose] ;
 
@@ -70,12 +80,16 @@
 		                		}
 							} elseif ($exploded_Message[0] == "++other") {
 		                		$term = substr($message['text'], 8);
-							} elseif ($exploded_Message[0] == "++list") {
+							}elseif ($exploded_Message[0] == "++random") {
+								$text_response = random_term_picker();
+							}elseif ($exploded_Message[0] == "++list") {
 								$text_response = "Here's all the command you can use right now ;\n\n" .
 								"++define <Word> :\n" . 
 								"Search the meaning of <Word> in Urban Dictionary that has the most likes\n\n" .
 								"++other <Word> : \n" .
 								"Same as ++define but i'll give you a random one without looking at their likes count\n\n" .
+								"++random :\n" .
+								"I'll describe a completely random word for you. Unknown is fun sometimes\n\n" .
 								"++list : \n" .
 								"Listing all the commands you can give me" ;
 							}
