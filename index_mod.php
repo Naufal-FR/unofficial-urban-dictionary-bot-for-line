@@ -39,7 +39,7 @@
 		$definition_format = "> Definition <\n" . $term_array['list'][$chosen_array]['definition'];
 		$example_format = "> Example <\n" . $term_array['list'][$chosen_array]['example'];
 		
-		$variation_format = 'This is variation ' . ($chosen_array + 1) .  ' of ' . $variation_total . "\n" ;
+		$variation_format = 'This is variation ' . ($chosen_array + 1) .  ' of ' . $variation_total ;
 
 		$tips_no1 = 'Type ++other <word> to get a random variation' ;
 		$tips_no2 = 'Type ++define <word> to get the most voted variation' ;
@@ -47,7 +47,7 @@
 		$tips_no4 = 'Type ++random to get a completely random word that i will describe' ;
 		$tips_list = array($tips_no1, $tips_no2, $tips_no3, $tips_no4);
 		$tips_choose = rand(0,count($tips_list)-1);
-		$tips_format = 'Tip : ' . $tips_list[$tips_choose] ;
+		$tips_format = 'Tips : ' . $tips_list[$tips_choose] ;
 
 		$term_result_array = array ($command_format, $word_format, $definition_format, $example_format, $variation_format, $tips_format);
 		$text_return = implode("\n\n",$term_result_array) . "";
@@ -81,14 +81,19 @@
 		                		}
 							} elseif ($exploded_Message[0] == "++other") {
 		                		$term = substr($message['text'], 8);
-							}elseif ($exploded_Message[0] == "++random") {
+							} elseif ($exploded_Message[0] == "++random") {
 								$text_response = random_term_picker();
-							}elseif ($exploded_Message[0] == "++list") {
-								$text_response = $list_text;
+							} elseif (substr_count($exploded_Message[0], "++var", 0, 5) == 1) {
+								$choosen_variation = substr($exploded_Message, 5, strlen($exploded_Message));
+								$exploded_Message[0] = "++var" ;
+							} 
+
+							if ($exploded_Message[0] == "++list") {
+								$text_response = $list_text ;
 							}
 
 							if (empty($term)) {
-								// Empty to compensate for pre-built LINE responses
+								// Empty to compensate for list command
 							} else {
 		                		$term_array = define_term($term);
 		                		if ($term_array['result_type'] == "no_results") {
@@ -99,6 +104,8 @@
 									if ($exploded_Message[0] == "++other") {
 										$lookup_value = rand(0,$variation-1);
 										if ($lookup_value == 0){$lookup_value = rand(0,$variation-1);}
+									} elseif ($exploded_Message[0] == "++var") {
+										$lookup_value = $choosen_variation ;
 									}
 									$text_response = format_return_text($term_array, $lookup_value, $variation, $exploded_Message[0]);	
 		                		}	
