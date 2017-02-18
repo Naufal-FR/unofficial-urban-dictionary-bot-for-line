@@ -34,6 +34,9 @@
 
 	// Returned Text Format
 	function format_return_text ($term_array, $chosen_array, $variation_total, $command_type){
+		if (count($term_array['list']) - 1 < $chosen_array) {
+			return "There's no variation " . ($chosen_array + 1) . ". Try other number." ;
+		}
 		$command_format = "Command Type : " . $command_type ;
 		$word_format = "> Word <\n" . $term_array['list'][$chosen_array]['word'];
 		$definition_format = "> Definition <\n" . $term_array['list'][$chosen_array]['definition'];
@@ -83,8 +86,12 @@
 		                		$term = substr($message['text'], 8);
 							} elseif ($exploded_Message[0] == "++random") {
 								$text_response = random_term_picker();
-							} elseif (substr_count($exploded_Message[0], "++var", 0, 5) == 1) {
-								$choosen_variation = substr($exploded_Message, 5, strlen($exploded_Message));
+							} elseif (substr_count($exploded_Message[0], "++var", 0, strlen($exploded_Message[0])) == 1) {
+								$choosen_variation = substr($exploded_Message[0], 5, strlen($exploded_Message[0])) - 1 ;
+								if ($choosen_variation > 9) {
+									$text_response = "There's no more variation above 10" ; 
+								}
+								$term = substr($message['text'], strlen($exploded_Message[0])) ;
 								$exploded_Message[0] = "++var" ;
 							} 
 
@@ -112,7 +119,7 @@
 							}
 
 						} catch (Exception $e) {
-	                		$text_response = "Sorry, An Error Just Occured";	
+	                		$text_response = "Sorry, An Error Just Occured" . PHP_EOL . $e->getMessage();	
 						}
 
 	                    $client->replyMessage(array(
@@ -124,20 +131,6 @@
 	                            )
 	                        )
 	                    ));
-	                    
-	                    $log = 	date("F j, Y, g:i a") . PHP_EOL . 	                    		
-	                    		"User ID: " . $user_id . PHP_EOL . 
-	                    		"Command: " . $exploded_Message[0] . PHP_EOL . 
-	                    		"Word: " . $term_array['list'][$lookup_value]['word'] . PHP_EOL .
-	                    		"-----------------------------" . PHP_EOL;  
-
-	                    $dir = "./log" ;
-	                    if (is_dir($dir) === false) {
-	                    	mkdir($dir) ;
-	                    }
-	                    $log_file = fopen($dir . '/' . 'log.txt', "a") ;
-	                    fwrite($log_file, $log);
-	                    fclose($log_file);
 
 	                    break;
 	            
