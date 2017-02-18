@@ -10,11 +10,11 @@ With this BOT you can ask anything and find many silly meaning behind your input
 
 ##Usages 
 - `++define <Word>` : Find the meaning of `<Word>` from www.urbandictionary.com based on the most rated one
-<br>Example : `++define Cat`<br>  
+<br>Example : `++define Cat`  
 - `++other <Word>` : Same as `++define` but doesn't consider the rating of it
-<br>Example : `++other Cats`<br>
+<br>Example : `++other Cats`
 - `++var<number> <Word>` : I'll return a specific variation on the inputted word. 
-<br>Example : `++var4 Cats`<br>
+<br>Example : `++var4 Cats`
 - `++random` : Pick a completely random word and return their meaning and example
 - `++list` : List all the command currently supported by the BOT  
 
