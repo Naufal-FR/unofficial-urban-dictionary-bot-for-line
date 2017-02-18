@@ -2,6 +2,7 @@
 
 	require_once('./LINEBotTiny.php');
 	require_once('./channelKey.php');
+	require_once('./list_text.php');
 
 	// Error Handling Mainly In Case No Term Found
 	function exceptions_error_handler($severity, $message, $filename, $lineno) {
@@ -82,7 +83,6 @@
 		                		$term = substr($message['text'], 8);
 							} elseif ($exploded_Message[0] == "++random") {
 								$text_response = random_term_picker();
-<<<<<<< HEAD
 							} elseif (substr_count($exploded_Message[0], "++var", 0, 5) == 1) {
 								$choosen_variation = substr($exploded_Message, 5, strlen($exploded_Message));
 								$exploded_Message[0] = "++var" ;
@@ -90,18 +90,6 @@
 
 							if ($exploded_Message[0] == "++list") {
 								$text_response = $list_text ;
-=======
-							}elseif ($exploded_Message[0] == "++list") {
-								$text_response = "Here's all the command you can use right now ;\n\n" .
-								"++define <Word> :\n" . 
-								"Search the meaning of <Word> in Urban Dictionary that has the most likes\n\n" .
-								"++other <Word> : \n" .
-								"Same as ++define but i'll give you a random one without looking at their likes count\n\n" .
-								"++random :\n" .
-								"I'll describe a completely random word for you. Unknown is fun sometimes\n\n" .
-								"++list : \n" .
-								"Listing all the commands you can give me" ;
->>>>>>> parent of f8bcf47... Added log capability and seperated the text of list command
 							}
 
 							if (empty($term)) {
@@ -136,6 +124,21 @@
 	                            )
 	                        )
 	                    ));
+	                    
+	                    $log = 	date("F j, Y, g:i a") . PHP_EOL . 	                    		
+	                    		"User ID: " . $user_id . PHP_EOL . 
+	                    		"Command: " . $exploded_Message[0] . PHP_EOL . 
+	                    		"Word: " . $term_array['list'][$lookup_value]['word'] . PHP_EOL .
+	                    		"-----------------------------" . PHP_EOL;  
+
+	                    $dir = "./log" ;
+	                    if (is_dir($dir) === false) {
+	                    	mkdir($dir) ;
+	                    }
+	                    $log_file = fopen($dir . '/' . 'log.txt', "a") ;
+	                    fwrite($log_file, $log);
+	                    fclose($log_file);
+
 	                    break;
 	            
 	                default:
