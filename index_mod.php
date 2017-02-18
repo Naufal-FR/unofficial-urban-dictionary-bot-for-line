@@ -2,6 +2,7 @@
 
 	require_once('./LINEBotTiny.php');
 	require_once('./channelKey.php');
+	require_once('./list_text.php');
 
 	// Error Handling Mainly In Case No Term Found
 	function exceptions_error_handler($severity, $message, $filename, $lineno) {
@@ -33,6 +34,9 @@
 
 	// Returned Text Format
 	function format_return_text ($term_array, $chosen_array, $variation_total, $command_type){
+		if (count($term_array['list']) - 1 < $chosen_array) {
+			return "There's no variation " . ($chosen_array + 1) . ". Try other number." ;
+		}
 		$command_format = "Command Type : " . $command_type ;
 		$word_format = "> Word <\n" . $term_array['list'][$chosen_array]['word'];
 		$definition_format = "> Definition <\n" . $term_array['list'][$chosen_array]['definition'];
@@ -82,26 +86,17 @@
 		                		$term = substr($message['text'], 8);
 							} elseif ($exploded_Message[0] == "++random") {
 								$text_response = random_term_picker();
-<<<<<<< HEAD
-							} elseif (substr_count($exploded_Message[0], "++var", 0, 5) == 1) {
-								$choosen_variation = substr($exploded_Message, 5, strlen($exploded_Message));
+							} elseif (substr_count($exploded_Message[0], "++var", 0, strlen($exploded_Message[0])) == 1) {
+								$choosen_variation = substr($exploded_Message[0], 5, strlen($exploded_Message[0])) - 1 ;
+								if ($choosen_variation > 9) {
+									$text_response = "There's no more variation above 10" ; 
+								}
+								$term = substr($message['text'], strlen($exploded_Message[0])) ;
 								$exploded_Message[0] = "++var" ;
 							} 
 
 							if ($exploded_Message[0] == "++list") {
 								$text_response = $list_text ;
-=======
-							}elseif ($exploded_Message[0] == "++list") {
-								$text_response = "Here's all the command you can use right now ;\n\n" .
-								"++define <Word> :\n" . 
-								"Search the meaning of <Word> in Urban Dictionary that has the most likes\n\n" .
-								"++other <Word> : \n" .
-								"Same as ++define but i'll give you a random one without looking at their likes count\n\n" .
-								"++random :\n" .
-								"I'll describe a completely random word for you. Unknown is fun sometimes\n\n" .
-								"++list : \n" .
-								"Listing all the commands you can give me" ;
->>>>>>> parent of f8bcf47... Added log capability and seperated the text of list command
 							}
 
 							if (empty($term)) {
@@ -124,7 +119,7 @@
 							}
 
 						} catch (Exception $e) {
-	                		$text_response = "Sorry, An Error Just Occured";	
+	                		$text_response = "Sorry, An Error Just Occured" . PHP_EOL . $e->getMessage();	
 						}
 
 	                    $client->replyMessage(array(
@@ -136,6 +131,7 @@
 	                            )
 	                        )
 	                    ));
+
 	                    break;
 	            
 	                default:
