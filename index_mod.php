@@ -58,6 +58,21 @@
 		return $text_return ;
 	}
 
+	function create_log_data ($source, $command) {
+		$choosenID = 'userId' ;
+		if (!isset($source['userId'])) {
+			$choosenID = 'groupId' ;
+		}
+
+		$log = 	
+			date('d-m-Y h:i:s e') . PHP_EOL . 	                    		
+    		"User ID: " . $source[$choosenID] . PHP_EOL . 
+    		"Command: " . $command . PHP_EOL . 
+    		"-----------------------------" . PHP_EOL; 
+
+    	file_put_contents('./log.txt', $log, FILE_APPEND | LOCK_EX);
+	}
+
 	
 	$client = new LINEBotTiny($channelAccessToken, $channelSecret);
 
@@ -115,8 +130,10 @@
 										$lookup_value = $choosen_variation ;
 									}
 									$text_response = format_return_text($term_array, $lookup_value, $variation, $exploded_Message[0]);	
-		                		}	
+		                		}
+								create_log_data($event['source'], $exploded_Message[0]);
 							}
+
 
 						} catch (Exception $e) {
 	                		$text_response = "Sorry, An Error Just Occured" . PHP_EOL . $e->getMessage();	
