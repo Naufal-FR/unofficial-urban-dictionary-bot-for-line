@@ -96,22 +96,28 @@
 		                			$text_response = "No definition inputted" ;
 		                		} else {
 		                			$term = substr($message['text'], 9);
+		                			$exec_command = '++define' ;
 		                		}
 							} elseif ($exploded_Message[0] == "++other") {
 		                		$term = substr($message['text'], 8);
+		                		$exec_command = '++other' ;
 							} elseif ($exploded_Message[0] == "++random") {
 								$text_response = random_term_picker();
+								$exec_command = '++random' ;
 							} elseif (substr_count($exploded_Message[0], "++var", 0, strlen($exploded_Message[0])) == 1) {
 								$choosen_variation = substr($exploded_Message[0], 5, strlen($exploded_Message[0])) - 1 ;
 								if ($choosen_variation > 9) {
 									$text_response = "There's no more variation above 10" ; 
+								} else {
+									$term = substr($message['text'], strlen($exploded_Message[0])) ;
+									$exploded_Message[0] = "++var" ;
+									$exec_command = '++var' ;
 								}
-								$term = substr($message['text'], strlen($exploded_Message[0])) ;
-								$exploded_Message[0] = "++var" ;
 							} 
 
 							if ($exploded_Message[0] == "++list") {
 								$text_response = $list_text ;
+								$exec_command = '++list' ;
 							}
 
 							if (empty($term)) {
@@ -131,7 +137,7 @@
 									}
 									$text_response = format_return_text($term_array, $lookup_value, $variation, $exploded_Message[0]);	
 		                		}
-								create_log_data($event['source'], $exploded_Message[0]);
+								create_log_data($event['source'], $exec_command);
 							}
 
 
