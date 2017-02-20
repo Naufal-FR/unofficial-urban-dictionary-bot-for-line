@@ -59,7 +59,6 @@
 	}
 
 	function create_log_data ($source, $command) {
-		$choosenID = 'userId' ;
 		if (!isset($source['userId'])) {
 			$choosenID = 'groupId' ;
 			if (!isset($source['groupId'])) {
@@ -124,6 +123,8 @@
 								$text_response = $list_text ;
 								$exec_command = '++list' ;
 							}
+							
+							create_log_data($event['source'], $exec_command);
 
 							if (empty($term)) {
 								// Empty to compensate for list command
@@ -142,7 +143,6 @@
 									}
 									$text_response = format_return_text($term_array, $lookup_value, $variation, $exploded_Message[0]);	
 		                		}
-								create_log_data($event['source'], $exec_command);
 							}
 
 
