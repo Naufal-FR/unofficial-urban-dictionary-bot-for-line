@@ -35,7 +35,7 @@
 		                		$term = substr($message['text'], 8);
 		                		$exec_command = '++other' ;
 							} elseif ($exploded_Message[0] == "++random") {
-								$text_response = random_term_picker();
+								$text_response = random_term();
 								$exec_command = '++random' ;
 							} elseif (substr_count($exploded_Message[0], "++var", 0, strlen($exploded_Message[0])) == 1) {
 								$choosen_variation = substr($exploded_Message[0], 5, strlen($exploded_Message[0])) - 1 ;
@@ -66,7 +66,7 @@
 							if (empty($term)) {
 								// Empty to compensate for list command
 							} else {
-		                		$term_array = define_term($term);
+		                		$term_array = exact_term($term);
 		                		if ($term_array['result_type'] == "no_results") {
 		                			$text_response = "I'm sorry, no definition found" ;
 		                		} elseif ($term_array['result_type'] == "exact") {

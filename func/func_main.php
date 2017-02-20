@@ -11,14 +11,14 @@
 	}
 
 	// Finding The Definition From Urban Dictionary
-	function define_term ($term){
+	function exact_term ($term){
 		$term_url = 'http://api.urbandictionary.com/v0/define?term=' . str_replace(' ', '+', $term);
 		$term_json = file_get_contents($term_url);
 		$term_array = json_decode($term_json, true);
 		return $term_array ;
 	}
 
-	function random_term_picker (){
+	function random_term (){
 		$term_url = 'http://api.urbandictionary.com/v0/random';
 		$term_json = file_get_contents($term_url);
 		$term_array = json_decode($term_json, true);
@@ -63,11 +63,11 @@
 		}
 
 		$log = 	
-			date('d-m-Y h:i:s e') . PHP_EOL . 	                    		
+			date('Y-m-d h:i:s e') . PHP_EOL . 	                    		
     		"User ID: " . $source[$choosenID] . PHP_EOL . 
     		"Command: " . $command . PHP_EOL . 
     		"-----------------------------" . PHP_EOL; 
 
-    	file_put_contents('./log.txt', $log, FILE_APPEND | LOCK_EX);
+    	file_put_contents('./logs/' . date('Y-m-d') . '.txt', $log, FILE_APPEND | LOCK_EX);
 	}
 ?>
