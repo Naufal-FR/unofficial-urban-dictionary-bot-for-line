@@ -1,7 +1,8 @@
 <?php
 
-	require_once('./LINEBotTiny.php');
-	require_once('./channelKey.php');
+	require_once( __DIR__ . '/src/LINEBotTiny.php');
+	// require_once( __DIR__ . '/func/func_main.php');
+	require_once( __DIR__ . '/conf/channel_key.php');
 	require_once( __DIR__ . "/text/text_main.php");
 
 	// Error Handling Mainly In Case No Term Found
@@ -125,8 +126,8 @@
 							}
 
 							if ($exploded_Message[0] == "++debug") {
-								$result = is_dir(__DIR__ . "/text") ;
-								// $result = file_exists(__DIR__ . "/text/text_main.php") ;
+								// $result = is_dir("./conf") ;
+								$result = file_exists("./func/func_main.php") ;
 								// $text_response = __DIR__ . "/text/text_main.php" ;
 								$text_response = $result ;
 								$exec_command = "++debug" ;
