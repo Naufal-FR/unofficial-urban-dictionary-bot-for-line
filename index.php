@@ -2,7 +2,7 @@
 
 	require_once('./LINEBotTiny.php');
 	require_once('./channelKey.php');
-	require_once('./list_text.php');
+	require_once( __DIR__ . "/text/text_main.php");
 
 	// Error Handling Mainly In Case No Term Found
 	function exceptions_error_handler($severity, $message, $filename, $lineno) {
@@ -122,6 +122,14 @@
 							if ($exploded_Message[0] == "++list") {
 								$text_response = $list_text ;
 								$exec_command = '++list' ;
+							}
+
+							if ($exploded_Message[0] == "++debug") {
+								$result = is_dir(__DIR__ . "/text") ;
+								// $result = file_exists(__DIR__ . "/text/text_main.php") ;
+								// $text_response = __DIR__ . "/text/text_main.php" ;
+								$text_response = $result ;
+								$exec_command = "++debug" ;
 							}
 							
 							create_log_data($event['source'], $exec_command);
