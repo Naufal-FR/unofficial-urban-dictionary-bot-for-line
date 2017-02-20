@@ -1,9 +1,13 @@
 <?php
 
 	require_once( __DIR__ . '/src/LINEBotTiny.php');
-	require_once( __DIR__ . '/func/func_main.php');
+
 	require_once( __DIR__ . '/conf/channel_key.php');
-	require_once( __DIR__ . "/text/text_main.php");
+	
+	require_once( __DIR__ . '/func/func_main.php');
+
+	require_once( __DIR__ . '/text/text_list_command.php');
+	require_once( __DIR__ . '/text/text_tips.php');
 
 	set_error_handler('exceptions_error_handler');
 	
@@ -61,7 +65,9 @@
 								$exec_command = "++debug" ;
 							}
 							
-							create_log_data($event['source'], $exec_command);
+							if (!empty($exec_command)) {
+								create_log_data($event['source'], $exec_command);
+							}
 
 							if (empty($term)) {
 								// Empty to compensate for list command
