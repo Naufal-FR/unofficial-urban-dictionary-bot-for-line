@@ -9,8 +9,6 @@
 	    throw new ErrorException($message, 0, $severity, $filename, $lineno);
 	  }
 	}
-	
-	set_error_handler('exceptions_error_handler');
 
 	// Finding The Definition From Urban Dictionary
 	function define_term ($term){
@@ -29,7 +27,6 @@
 		return $term_return ;	
 	}
 
-	// Returned Text Format
 	function format_return_text ($term_array, $chosen_array, $variation_total, $command_type){
 		if (count($term_array['list']) - 1 < $chosen_array) {
 			return "There's no variation " . ($chosen_array + 1) . ". Try other number." ;
