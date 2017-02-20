@@ -6,7 +6,7 @@
 	
 	require_once( __DIR__ . '/func/func_main.php');
 
-	require_once( __DIR__ . '/text/text_list_command.php');
+	require_once( __DIR__ . '/text/text_command_list.php');
 	require_once( __DIR__ . '/text/text_tips.php');
 
 	set_error_handler('exceptions_error_handler');
