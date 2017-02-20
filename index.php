@@ -62,6 +62,11 @@
 		$choosenID = 'userId' ;
 		if (!isset($source['userId'])) {
 			$choosenID = 'groupId' ;
+			if (!isset($source['groupId'])) {
+				$choosenID = 'roomId' ;
+			} 
+		} else {
+			$choosenID = 'userId' ;
 		}
 
 		$log = 	
